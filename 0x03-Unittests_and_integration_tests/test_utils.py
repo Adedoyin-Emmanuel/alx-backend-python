@@ -11,13 +11,14 @@ class TestAccessNestedMap(unittest.TestCase):
     to define multiple test cases
     """
     @parameterized.expand([
-        ({"a": 1}, ("a",), 1),
-        ({"a": {"b": 2}}, ("a",), {"b": 2}),
-        ({"a": {"b": 2}}, ("a", "b"), 2),
+        ({}, ("a",), "Key not found: 'a' in {}"),
+        ({"a": 1}, ("a", "b"), "Key not found: 'b' in {'a': 1}"),
     ])
-    def test_access_nested_map(self, nested_map, path, expected_result):
-        result = access_nested_map(nested_map, path)
-        self.assertEqual(result, expected_result)
+    def test_access_nested_map_exception(self, nested_map, path, expected_exception_message):
+        with self.assertRaises(KeyError) as context:
+            access_nested_map(nested_map, path)
+        actual_exception_message = str(context.exception)
+        self.assertEqual(actual_exception_message, expected_exception_message)
 
 
 if __name__ == '__main__':
